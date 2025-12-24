@@ -1,8 +1,13 @@
+from operator import itemgetter
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
+from langchain_core.runnables import RunnableParallel, RunnablePassthrough
+from langchain_core.output_parsers import StrOutputParser
 from app.core.config import settings
 from app.core.vector_store import get_vector_store
+
+def format_docs(docs):
+    return "\n\n".join(doc.page_content for doc in docs)
 
 def get_rag_chain():
     if not settings.GOOGLE_API_KEY:
@@ -30,12 +35,20 @@ def get_rag_chain():
         template=prompt_template, input_variables=["context", "question"]
     )
 
-    chain = RetrievalQA.from_chain_type(
-        llm=llm,
-        chain_type="stuff",
-        retriever=retriever,
-        return_source_documents=True,
-        chain_type_kwargs={"prompt": PROMPT}
+    # LCEL Chain Construction
+    chain = (
+        RunnableParallel({
+            "source_documents": itemgetter("query") | retriever,
+            "question": itemgetter("query")
+        })
+        .assign(result=(
+            RunnablePassthrough.assign(
+                context=lambda x: format_docs(x["source_documents"])
+            )
+            | PROMPT
+            | llm
+            | StrOutputParser()
+        ))
     )
 
     return chain
