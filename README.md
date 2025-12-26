@@ -1,12 +1,13 @@
-# Basic RAG with Gemini 2.5 Flash-Lite
+# Gemini RAG Lab
 
-This project is a basic RAG (Retrieval Augmented Generation) system using:
-- **LLM:** Gemini 2.5 Flash-Lite
+This project is a modular Retrieval Augmented Generation (RAG) system, showcasing:
+- **LLM:** Google Gemini 2.5 Flash-Lite
 - **Embeddings:** Google Generative AI Embeddings
-- **Vector Store:** ChromaDB
+- **Vector Store:** ChromaDB (local persistence)
 - **Backend:** FastAPI
 - **Frontend:** Streamlit
 - **Tracing/Eval:** Arize Phoenix
+- **Key Feature:** Persistent chat history across sessions using SQLite.
 
 ## Setup
 
@@ -16,36 +17,37 @@ This project is a basic RAG (Retrieval Augmented Generation) system using:
    ```
 
 2. **Environment Variables:**
-   Copy `.env.example` (or just use `.env` created) and set your `GOOGLE_API_KEY`.
+   Create a `.env` file in the root directory by copying `.env.example` and fill in your `GOOGLE_API_KEY`.
    ```bash
-   cp .env .env.local
-   # Edit .env.local with your API Key
+   cp .env.example .env
+   # Edit .env with your GOOGLE_API_KEY
    ```
 
 ## Running the Application
 
-You need to run the Phoenix server, the FastAPI backend, and the Streamlit frontend.
+This project uses a `Makefile` to simplify running the different services. You need to start the Phoenix server, the FastAPI backend, and the Streamlit frontend.
 
 ### 1. Start Arize Phoenix (Optional but recommended for tracing)
 ```bash
-poetry run python -m phoenix.server.main serve
+make phoenix
 ```
 *Access Phoenix UI at http://localhost:6006*
 
 ### 2. Start Backend (FastAPI)
 ```bash
-poetry run uvicorn app.api.main:app --reload --port 8000
+make api
 ```
 *API docs at http://localhost:8000/docs*
 
 ### 3. Start Frontend (Streamlit)
 ```bash
-poetry run streamlit run app/ui/app.py
+make ui
 ```
 *Access Chatbot at http://localhost:8501*
 
 ## Usage
-1. Open the Streamlit app.
+
+1. Open the Streamlit app in your browser (after running `make ui`).
 2. Upload a PDF or Markdown file via the sidebar.
 3. Click "Ingest File".
-4. Ask questions in the chat.
+4. Ask questions in the chat interface. Your conversation history will be persisted for your session.

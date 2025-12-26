@@ -1,5 +1,5 @@
 [project]
-name = "basic-rag"
+name = "gemini-rag-lab"
 version = "0.1.0"
 description = "Basic RAG with LangChain, Streamlit, FastAPI, ChromaDB and Phoenix"
 authors = [

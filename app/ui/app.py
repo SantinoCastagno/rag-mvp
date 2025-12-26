@@ -4,9 +4,9 @@ import uuid
 
 API_URL = "http://localhost:8000"
 
-st.set_page_config(page_title="Basic RAG with Gemini 2.5", layout="wide")
+st.set_page_config(page_title="Gemini RAG Lab", layout="wide")
 
-st.title("Basic RAG Chatbot")
+st.title("Gemini RAG Lab")
 st.caption("Powered by Gemini 2.5 Flash-Lite")
 
 # Initialize Session ID
