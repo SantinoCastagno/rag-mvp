@@ -1,13 +1,20 @@
 from operator import itemgetter
+import os
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import PromptTemplate
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
+from langchain_community.chat_message_histories import SQLChatMessageHistory
+from langchain_core.runnables.history import RunnableWithMessageHistory
 from app.core.config import settings
 from app.core.vector_store import get_vector_store
 
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
+
+def get_session_history(session_id: str):
+    os.makedirs("data", exist_ok=True)
+    return SQLChatMessageHistory(session_id=session_id, connection_string="sqlite:///data/chat_history.db")
 
 def get_rag_chain():
     if not settings.GOOGLE_API_KEY:
@@ -27,19 +34,23 @@ def get_rag_chain():
 
     Context:
     {context}
+    
+    Chat History:
+    {chat_history}
 
     Question: {question}
     Answer:"""
     
     PROMPT = PromptTemplate(
-        template=prompt_template, input_variables=["context", "question"]
+        template=prompt_template, input_variables=["context", "question", "chat_history"]
     )
 
     # LCEL Chain Construction
     chain = (
         RunnableParallel({
-            "source_documents": itemgetter("query") | retriever,
-            "question": itemgetter("query")
+            "source_documents": itemgetter("question") | retriever,
+            "question": itemgetter("question"),
+            "chat_history": itemgetter("chat_history")
         })
         .assign(result=(
             RunnablePassthrough.assign(
@@ -51,4 +62,12 @@ def get_rag_chain():
         ))
     )
 
-    return chain
+    chain_with_history = RunnableWithMessageHistory(
+        chain,
+        get_session_history,
+        input_messages_key="question",
+        history_messages_key="chat_history",
+        output_messages_key="result"
+    )
+
+    return chain_with_history
