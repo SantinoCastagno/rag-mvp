@@ -51,3 +51,8 @@ make ui
 2. Upload a PDF or Markdown file via the sidebar.
 3. Click "Ingest File".
 4. Ask questions in the chat interface. Your conversation history will be persisted for your session.
+
+## Notas de desarrollo
+
+- **Tests:** Los tests unitarios e de integración están fuera del alcance de este POC. El proyecto está pensado como demostración de un sistema RAG funcional, no como código de producción.
+- **Tracing:** Phoenix es opcional. Si no está corriendo, la API levanta igualmente con un warning en consola.

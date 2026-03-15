@@ -1,3 +1,4 @@
+import warnings
 from fastapi import FastAPI
 from app.api import routes
 from phoenix.otel import register
@@ -7,9 +8,11 @@ from app.core.config import settings
 app = FastAPI(title="Basic RAG API")
 
 # Initialize Phoenix and OpenTelemetry
-# This registers the tracer provider and configures it to send traces to Phoenix
-tracer_provider = register(project_name=settings.PHOENIX_PROJECT_NAME)
-LangChainInstrumentor().instrument(tracer_provider=tracer_provider)
+try:
+    tracer_provider = register(project_name=settings.PHOENIX_PROJECT_NAME)
+    LangChainInstrumentor().instrument(tracer_provider=tracer_provider)
+except Exception as e:
+    warnings.warn(f"Phoenix tracing no disponible: {e}. La API funcionará sin tracing.")
 
 app.include_router(routes.router)
 

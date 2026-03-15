@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from langchain_core.messages import HumanMessage
 from app.core.ingestion import process_file
 from app.core.rag_chain import get_rag_chain, get_session_history
@@ -8,8 +8,8 @@ from app.core.rag_chain import get_rag_chain, get_session_history
 router = APIRouter()
 
 class ChatRequest(BaseModel):
-    question: str
-    session_id: str
+    question: str = Field(..., min_length=1, max_length=2000)
+    session_id: str = Field(..., min_length=1, max_length=100)
 
 class ChatResponse(BaseModel):
     answer: str

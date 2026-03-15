@@ -23,11 +23,11 @@ def get_rag_chain():
     llm = ChatGoogleGenerativeAI(
         model=settings.GEMINI_MODEL_NAME,
         google_api_key=settings.GOOGLE_API_KEY,
-        temperature=0.7
+        temperature=settings.LLM_TEMPERATURE
     )
 
     vector_store = get_vector_store()
-    retriever = vector_store.as_retriever(search_kwargs={"k": 5})
+    retriever = vector_store.as_retriever(search_kwargs={"k": settings.RETRIEVER_K})
 
     prompt_template = """Use the following pieces of context to answer the question at the end. 
     If you don't know the answer, just say that you don't know, don't try to make up an answer.
