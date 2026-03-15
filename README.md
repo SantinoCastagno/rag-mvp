@@ -1,5 +1,7 @@
 # RAG Lab
 
+> [Versión en español](README.es.md)
+
 This project is a modular Retrieval Augmented Generation (RAG) system, showcasing:
 - **LLM / Embeddings:** Provider-agnostic via factory pattern — supports **Google Gemini** (default) and **Ollama**. Switch with `LLM_PROVIDER` env variable.
 - **Vector Store:** ChromaDB (local persistence)
@@ -51,7 +53,16 @@ make ui
 3. Click "Ingest File".
 4. Ask questions in the chat interface. Your conversation history will be persisted for your session.
 
-## Notas de desarrollo
+## Documentation
 
-- **Tests:** Los tests unitarios e de integración están fuera del alcance de este POC. El proyecto está pensado como demostración de un sistema RAG funcional, no como código de producción.
-- **Tracing:** Phoenix es opcional. Si no está corriendo, la API levanta igualmente con un warning en consola.
+Detailed technical documentation is available in the [`docs/`](docs/) directory:
+
+- [Architecture](docs/ARCHITECTURE.md)
+- [System Flows](docs/SYSTEM_FLOWS.md)
+- [Data Models](docs/DATA_MODELS.md)
+- [API Protocol](docs/PROTOCOL_API.md)
+
+## Development Notes
+
+- **Tests:** Unit and integration tests are out of scope for this POC. The project is intended as a demonstration of a functional RAG system, not production-ready code.
+- **Tracing:** Phoenix is optional. If it is not running, the API will still start with a warning in the console.
