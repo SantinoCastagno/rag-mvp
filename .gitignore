@@ -18,6 +18,7 @@ venv/
 # Project specific
 .env
 data/chroma_db/
+data/chat_history.db
 
 # Poetry
 .poetry/
